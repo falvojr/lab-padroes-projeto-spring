@@ -44,7 +44,7 @@ public class ClienteServiceImpl implements ClienteService {
 	public Cliente buscarPorId(Long id) {
 		// Buscar Cliente por ID.
 		Optional<Cliente> cliente = clienteRepository.findById(id);
-		return cliente.orElseThrow(() -> new ClienteNotFoundException("Cliente not found with ID: " + id));
+		return cliente.orElseThrow(() -> new ClienteNotFoundException("No customer found with ID #" + id));
 	}
 
 	@Override
@@ -55,10 +55,16 @@ public class ClienteServiceImpl implements ClienteService {
 	@Override
 	public void atualizar(Long id, Cliente cliente) {
 		// Buscar Cliente por ID, caso exista:
-		Optional<Cliente> clienteBd = clienteRepository.findById(id);
-		if (clienteBd.isPresent()) {
+		Optional<Cliente> clienteCadastrado = clienteRepository.findById(id);
+		if (clienteCadastrado.isPresent()) {
+			if(cliente != null) {
 			salvarClienteComCep(cliente);
-		}
+			} else {
+				throw new IllegalArgumentException("Invalid null cliente.");
+			}
+		} else {
+        throw new ClienteNotFoundException("No customer found with ID #" + id);
+    }
 	}
 
 	@Override
